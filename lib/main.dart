@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twitch_chat_flutter/repositories/authorization.dart';
+import 'package:twitch_chat_flutter/repositories/twitch_irc_client.dart';
 import 'package:twitch_chat_flutter/screens/authorization/authorization_screen.dart';
 
 // Package imports:
@@ -15,8 +16,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => AuthRepository(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => AuthRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => TwitchIrcClient(),
+        ),
+      ],
       child: BlocProvider(
         create: (context) => AuthorizationBloc(context.read<AuthRepository>()),
         child: MaterialApp(

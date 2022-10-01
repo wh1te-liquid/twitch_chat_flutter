@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:twitch_chat_flutter/constants.dart';
+import 'package:twitch_chat_flutter/repositories/authorization.dart';
+import 'package:twitch_chat_flutter/repositories/twitch_irc_client.dart';
 import 'package:twitch_chat_flutter/screens/authorization/bloc/authorization_bloc.dart';
-import 'package:twitch_chat_flutter/screens/authorization/widgets/twitch_auth_webview.dart';
+import 'package:twitch_chat_flutter/screens/authorization/widgets/auth_button.dart';
+import 'package:twitch_chat_flutter/screens/chat/chat_screen.dart';
 
 class AuthorizationScreen extends StatelessWidget {
   const AuthorizationScreen({Key? key}) : super(key: key);
@@ -11,34 +13,25 @@ class AuthorizationScreen extends StatelessWidget {
     return MaterialPageRoute(builder: (context) => const AuthorizationScreen());
   }
 
-  String get loginUrl => "$baseUrl/oauth2/authorize"
-      "?response_type=code"
-      "&client_id=$clientId"
-      "&redirect_uri=http://localhost"
-      "&scope=chat%3Aread+chat%3Aedit";
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthorizationBloc, AuthorizationState>(
+    return BlocConsumer<AuthorizationBloc, AuthorizationState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.success) {
+          final client = context.read<TwitchIrcClient>();
+          client.connectToIRC(
+              accessToken: context.read<AuthRepository>().jwt!.accessToken);
+          client.connectToChat(username: 'frametamer666');
+          Navigator.push(context, ChatScreen.route(client: client));
+        }
+      },
       builder: (context, state) {
         return Container(
           color: Colors.white,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                  onTap: () async {
-                    Navigator.push(
-                            context, TwitchAuthWebViewScreen.route(loginUrl))
-                        .then((code) {
-                      if (code != null) {
-                        context
-                            .read<AuthorizationBloc>()
-                            .add(AuthorizationInit(code: code));
-                      }
-                    });
-                  },
-                  child: Container(height: 50, width: 80, color: Colors.purple))
+            children: const [
+              AuthButton()
             ],
           ),
         );

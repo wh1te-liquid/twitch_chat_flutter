@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'package:twitch_chat_flutter/constants.dart';
 import 'package:twitch_chat_flutter/repositories/dio.dart';
-import 'package:web_socket_channel/io.dart';
 
 class JWT {
   final String accessToken;
@@ -32,21 +30,5 @@ class AuthRepository {
     _jwt = JWT(
         accessToken: response.data['access_token'],
         refreshToken: response.data['refresh_token']);
-    connectToIRC();
-  }
-
-  void connectToIRC() {
-    if (jwt == null) return;
-    var channel =
-        IOWebSocketChannel.connect(Uri.parse('wss://irc-ws.chat.twitch.tv:443'))
-          ..sink.add(
-              'CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands')
-          ..sink.add('PASS oauth:${jwt!.accessToken}')
-          ..sink.add('NICK wh1telqd')
-          ..sink.add('JOIN #stintik');
-
-    channel.stream.listen((message) {
-      log(message.toString());
-    });
   }
 }
