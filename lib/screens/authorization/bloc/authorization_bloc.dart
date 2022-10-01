@@ -14,9 +14,23 @@ class AuthorizationBloc extends Bloc<AuthorizationEvent, AuthorizationState> {
           status: AuthStatus.initial,
           authCode: '',
         )) {
-    on<AuthorizationInit>((event, emit) async {
+    on<AuthorizationLogin>((event, emit) async {
       await auth(code: event.code, emit: emit);
     });
+    on<AuthorizationCheckState>((event, emit) async {
+      await checkAuthState(emit: emit);
+    });
+  }
+
+  Future<void> checkAuthState({
+    required Emitter<AuthorizationState> emit,
+  }) async {
+    await _authRepository.loadTokens();
+    if (_authRepository.isAuthenticated) {
+      emit(state.copyWith(status: AuthStatus.success));
+    } else {
+      emit(state.copyWith(status: AuthStatus.initial));
+    }
   }
 
   Future<void> auth({

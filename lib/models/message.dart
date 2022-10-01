@@ -29,7 +29,7 @@ class Message {
       tags: json['tags'] == null ? null : Tags.fromJson(json['tags']),
       source: json['source'] == null ? null : Source.fromJson(json['source']),
       command: Command.fromJson(json['command']),
-      parameters: json['parameters'],
+      parameters: json['parameters'] ?? 'null',
     );
   }
 }

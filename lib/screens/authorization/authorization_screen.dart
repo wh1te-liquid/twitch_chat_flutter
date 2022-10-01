@@ -21,7 +21,7 @@ class AuthorizationScreen extends StatelessWidget {
           final client = context.read<TwitchIrcClient>();
           client.connectToIRC(
               accessToken: context.read<AuthRepository>().jwt!.accessToken);
-          client.connectToChat(username: 'frametamer666');
+          client.connectToChat(username: 'stintik');
           Navigator.push(context, ChatScreen.route(client: client));
         }
       },

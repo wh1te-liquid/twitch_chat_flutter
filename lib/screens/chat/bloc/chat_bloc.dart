@@ -32,7 +32,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (parsedRawMessage != null) {
       final message = Message.fromJson(parsedRawMessage);
       List<Message> messages = [...state.messages];
-      if (messages.length <= 150) {
+      if (messages.length <= 100) {
         messages.insert(0, message);
       } else {
         messages.removeAt(messages.length - 1);

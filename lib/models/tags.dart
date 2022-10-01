@@ -6,10 +6,10 @@ class Tags {
   final String? emoteOnly;
   final String? id;
   final String? mod;
-  final String roomId;
+  final String? roomId;
   final String? subscriber;
   final String? turbo;
-  final String tmiSentTs;
+  final String? tmiSentTs;
   final String? userId;
   final String? userType;
 

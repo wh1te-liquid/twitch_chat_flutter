@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twitch_chat_flutter/repositories/twitch_irc_client.dart';
 import 'package:twitch_chat_flutter/screens/chat/bloc/chat_bloc.dart';
+import 'package:twitch_chat_flutter/screens/chat/widgets/message_card.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -28,12 +29,10 @@ class ChatScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 verticalDirection: VerticalDirection.up,
                 children: List.generate(
-                  state.messages.length,
-                  (index) => Text(
-                    state.messages[index].parameters,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
+                    state.messages.length,
+                    (index) => MessageCard(
+                          message: state.messages[index],
+                        )),
               ),
             ),
           );

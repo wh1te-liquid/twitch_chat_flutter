@@ -3,8 +3,10 @@ part of 'authorization_bloc.dart';
 @immutable
 abstract class AuthorizationEvent {}
 
-class AuthorizationInit extends AuthorizationEvent {
+class AuthorizationLogin extends AuthorizationEvent {
   final String code;
 
-  AuthorizationInit({required this.code});
+  AuthorizationLogin({required this.code});
 }
+
+class AuthorizationCheckState extends AuthorizationEvent {}

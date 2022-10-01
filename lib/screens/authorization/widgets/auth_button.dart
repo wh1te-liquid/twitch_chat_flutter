@@ -22,7 +22,7 @@ class AuthButton extends StatelessWidget {
           if (code != null) {
             context
                 .read<AuthorizationBloc>()
-                .add(AuthorizationInit(code: code));
+                .add(AuthorizationLogin(code: code));
           }
         });
       },

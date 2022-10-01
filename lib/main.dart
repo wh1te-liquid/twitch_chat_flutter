@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: BlocProvider(
-        create: (context) => AuthorizationBloc(context.read<AuthRepository>()),
+        create: (context) => AuthorizationBloc(context.read<AuthRepository>())
+          ..add(AuthorizationCheckState()),
         child: MaterialApp(
           title: 'TwitchChat',
           onGenerateRoute: (_) => AuthorizationScreen.route(),
