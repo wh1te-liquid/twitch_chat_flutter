@@ -18,8 +18,7 @@ class MyApp extends StatelessWidget {
     return RepositoryProvider(
       create: (context) => AuthRepository(),
       child: BlocProvider(
-        create: (context) => AuthorizationBloc(context.read<AuthRepository>())
-          ..init(),
+        create: (context) => AuthorizationBloc(context.read<AuthRepository>()),
         child: MaterialApp(
           title: 'TwitchChat',
           onGenerateRoute: (_) => AuthorizationScreen.route(),
