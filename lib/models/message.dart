@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:twitch_chat_flutter/models/command.dart';
 import 'package:twitch_chat_flutter/models/source.dart';
 import 'package:twitch_chat_flutter/models/tags.dart';
@@ -7,15 +8,17 @@ class Message {
   final Source? source;
   final Command command;
   final String parameters;
+  final String json;
 
   Message({
+    required this.json,
     required this.tags,
     required this.source,
     required this.command,
     required this.parameters,
   });
 
-  factory Message.fromJson(Map<String, dynamic> json) {
+  factory Message.fromJson(Map<String, dynamic> json, String rawData) {
     if (json["tags"] != null) {
       json["tags"] = Map<String, dynamic>.from(json["tags"]);
     }
@@ -26,6 +29,7 @@ class Message {
       json["command"] = Map<String, dynamic>.from(json["command"]);
     }
     return Message(
+      json: rawData.toString(),
       tags: json['tags'] == null ? null : Tags.fromJson(json['tags']),
       source: json['source'] == null ? null : Source.fromJson(json['source']),
       command: Command.fromJson(json['command']),

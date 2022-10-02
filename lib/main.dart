@@ -1,10 +1,13 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
 import 'package:twitch_chat_flutter/repositories/authorization.dart';
 import 'package:twitch_chat_flutter/repositories/twitch_irc_client.dart';
 import 'package:twitch_chat_flutter/screens/authorization/authorization_screen.dart';
-
-// Package imports:
 import 'package:twitch_chat_flutter/screens/authorization/bloc/authorization_bloc.dart';
 
 void main() async {

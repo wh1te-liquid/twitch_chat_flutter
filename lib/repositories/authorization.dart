@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+// Project imports:
 import 'package:twitch_chat_flutter/constants.dart';
 import 'package:twitch_chat_flutter/repositories/dio.dart';
 

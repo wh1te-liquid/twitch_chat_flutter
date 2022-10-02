@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
 import 'package:twitch_chat_flutter/repositories/authorization.dart';
 import 'package:twitch_chat_flutter/repositories/twitch_irc_client.dart';
 import 'package:twitch_chat_flutter/screens/authorization/bloc/authorization_bloc.dart';
@@ -21,7 +26,7 @@ class AuthorizationScreen extends StatelessWidget {
           final client = context.read<TwitchIrcClient>();
           client.connectToIRC(
               accessToken: context.read<AuthRepository>().jwt!.accessToken);
-          client.connectToChat(username: 'stintik');
+          client.connectToChat(username: 'paradeev1ch');
           Navigator.push(context, ChatScreen.route(client: client));
         }
       },
@@ -30,9 +35,7 @@ class AuthorizationScreen extends StatelessWidget {
           color: Colors.white,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              AuthButton()
-            ],
+            children: const [AuthButton()],
           ),
         );
       },

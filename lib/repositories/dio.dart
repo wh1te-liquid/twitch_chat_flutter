@@ -3,6 +3,8 @@ import 'dart:developer';
 
 // Package imports:
 import 'package:dio/dio.dart';
+
+// Project imports:
 import 'package:twitch_chat_flutter/constants.dart';
 
 Dio getDio() {
@@ -21,8 +23,7 @@ Dio getDio() {
 
 void logResponse({Response? response, DioError? error}) {
   final res = response ?? error?.response;
-  final RequestOptions options =
-      res?.requestOptions ?? error!.requestOptions;
+  final RequestOptions options = res?.requestOptions ?? error!.requestOptions;
   final shortUri = res?.realUri ?? options.uri;
   final shortUrl = shortUri.toString().replaceAll(options.baseUrl, "");
   var output = "${options.method} "

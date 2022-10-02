@@ -1,6 +1,8 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:twitch_chat_flutter/models/message.dart';
-import 'package:twitch_chat_flutter/utils/hex_color.dart';
 
 class MessageCard extends StatelessWidget {
   final Message message;
@@ -17,11 +19,12 @@ class MessageCard extends StatelessWidget {
         ),
         children: <TextSpan>[
           TextSpan(
-              text: message.source?.nick ?? 'null',
-              style: TextStyle(
-                  color: message.tags?.color == null
-                      ? null
-                      : HexColor(message.tags!.color!))),
+            text: message.source?.nick,
+            style: TextStyle(
+              color: message.tags?.color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           TextSpan(text: ': ${message.parameters}'),
         ],
       ),

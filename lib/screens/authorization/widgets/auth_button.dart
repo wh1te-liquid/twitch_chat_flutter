@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
 import 'package:twitch_chat_flutter/constants.dart';
 import 'package:twitch_chat_flutter/screens/authorization/bloc/authorization_bloc.dart';
 import 'package:twitch_chat_flutter/screens/authorization/widgets/twitch_auth_webview.dart';

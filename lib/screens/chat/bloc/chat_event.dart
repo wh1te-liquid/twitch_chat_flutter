@@ -8,3 +8,7 @@ class ChatReceiveMessage extends ChatEvent {
 
   ChatReceiveMessage(this.data);
 }
+
+class ChatUpdateScrollPosition extends ChatEvent {}
+
+class ChatResumeAutoScroll extends ChatEvent {}

@@ -1,7 +1,16 @@
+// Dart imports:
+import 'dart:math';
+
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:twitch_chat_flutter/utils/hex_color.dart';
+
 class Tags {
   final Map? badges;
   final Map? emotes;
-  final String? color;
+  final Color color;
   final String? displayName;
   final String? emoteOnly;
   final String? id;
@@ -33,7 +42,9 @@ class Tags {
     return Tags(
       badges: json['badges'],
       emotes: json['emotes'],
-      color: json['color'],
+      color: json['color'] == null
+          ? Colors.primaries[Random().nextInt(Colors.primaries.length)]
+          : HexColor(json['color']!),
       displayName: json['display-name'],
       emoteOnly: json['emote-only'],
       id: json['id'],
