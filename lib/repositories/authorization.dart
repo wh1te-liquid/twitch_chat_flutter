@@ -43,6 +43,8 @@ class AuthRepository {
     saveTokens(_jwt!.accessToken, _jwt!.refreshToken);
   }
 
+  // TODO Создать анонимное получение токенов
+
   Future<void> logout() async {
     _jwt = null;
     _storage.delete(key: "accessToken");

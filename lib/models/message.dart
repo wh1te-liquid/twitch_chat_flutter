@@ -1,19 +1,33 @@
+// Dart imports:
+import 'dart:developer';
+
 // Project imports:
-import 'package:twitch_chat_flutter/models/command.dart';
 import 'package:twitch_chat_flutter/models/source.dart';
 import 'package:twitch_chat_flutter/models/tags.dart';
+
+enum CommandKind {
+  privateMessage,
+  clearChat,
+  clearMessage,
+  notice,
+  userNotice,
+  roomState,
+  userState,
+  globalUserState,
+  none,
+}
 
 class Message {
   final Tags? tags;
   final Source? source;
-  final Command command;
+  final CommandKind command;
   final String parameters;
   final String json;
 
   Message({
     required this.json,
-    required this.tags,
-    required this.source,
+    this.tags,
+    this.source,
     required this.command,
     required this.parameters,
   });
@@ -32,8 +46,48 @@ class Message {
       json: rawData.toString(),
       tags: json['tags'] == null ? null : Tags.fromJson(json['tags']),
       source: json['source'] == null ? null : Source.fromJson(json['source']),
-      command: Command.fromJson(json['command']),
+      command: getMessageKind(command: json['command']['command']),
       parameters: json['parameters'] ?? 'null',
     );
   }
+
+  factory Message.createNotice({required String message}) => Message(
+        command: CommandKind.userNotice,
+        parameters: message,
+        json: '',
+      );
+}
+
+CommandKind getMessageKind({required String command}) {
+  final CommandKind messageCommand;
+  switch (command) {
+    case 'PRIVMSG':
+      messageCommand = CommandKind.privateMessage;
+      break;
+    case 'CLEARCHAT':
+      messageCommand = CommandKind.clearChat;
+      break;
+    case 'CLEARMSG':
+      messageCommand = CommandKind.clearMessage;
+      break;
+    case 'NOTICE':
+      messageCommand = CommandKind.notice;
+      break;
+    case 'USERNOTICE':
+      messageCommand = CommandKind.userNotice;
+      break;
+    case 'ROOMSTATE':
+      messageCommand = CommandKind.roomState;
+      break;
+    case 'USERSTATE':
+      messageCommand = CommandKind.userState;
+      break;
+    case 'GLOBALUSERSTATE':
+      messageCommand = CommandKind.globalUserState;
+      break;
+    default:
+      log('Unknown command: $command');
+      messageCommand = CommandKind.none;
+  }
+  return messageCommand;
 }

@@ -131,13 +131,14 @@ Map parseTags(String tags) {
 Map? parseCommand(rawCommandComponent) {
   Map? parsedCommand;
   List<String> commandParts = rawCommandComponent.split(' ');
-
   switch (commandParts[0]) {
     case 'JOIN':
     case 'PART':
     case 'NOTICE':
+    case 'CLEARMSG':
     case 'CLEARCHAT':
     case 'HOSTTARGET':
+    case 'USERNOTICE':
     case 'PRIVMSG':
       parsedCommand = {'command': commandParts[0], 'channel': commandParts[1]};
       break;

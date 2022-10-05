@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:developer';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -18,63 +17,77 @@ part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final int renderMessagesLimit = 150;
-  StreamSubscription? chatSubscription;
+  final int _renderMessagesLimit = 150;
+  StreamSubscription? _chatSubscription;
 
-  ChatBloc({required TwitchIrcClient client})
+  ChatBloc({required TwitchIrcClient client, required String accessToken})
       : super(ChatState(
           scrollController: ScrollController(),
           autoScroll: true,
           messages: const [],
           messageBuffer: const [],
         )) {
-    chatSubscription = client.stream?.listen(
-        (data) {
-          add(ChatReceiveMessage(data));
-        },
-        onError: (error) => log('Chat error: ${error.toString()}'),
-        onDone: () {
-          log('done');
-        });
-
+    client.updateListener(
+      accessToken: accessToken,
+      onData: (data) {
+        add(ChatReceiveMessage(data: data));
+      },
+      onCancel: () {
+        if (client.reconnectCooldown > 0) {
+          final notice =
+              'Disconnected from chat, waiting ${client.reconnectCooldown} ${client.reconnectCooldown == 1 ? 'second' : 'seconds'} before reconnecting...';
+          add(ChatReceiveMessage(
+              notice: Message.createNotice(message: notice)));
+        }
+        add(ChatReceiveMessage(
+            notice: Message.createNotice(
+                message:
+                    'Reconnecting to chat (attempt ${client.retriesCounter})...')));
+      },
+    );
     state.scrollController.addListener(() {
       add(ChatUpdateScrollPosition());
     });
 
-    on<ChatReceiveMessage>(
-        (event, emit) => processMessage(data: event.data, emit: emit));
+    on<ChatReceiveMessage>((event, emit) =>
+        processMessage(data: event.data, notice: event.notice, emit: emit));
     on<ChatUpdateScrollPosition>((event, emit) => toggleAutoScroll(emit: emit));
     on<ChatResumeAutoScroll>((event, emit) => resumeScroll(emit: emit));
   }
 
   void processMessage({
     String? data,
+    Message? notice,
     required Emitter<ChatState> emit,
   }) {
-    if (data == null) return;
-    final parsedRawMessage = parseMessage(data);
-    if (parsedRawMessage != null) {
-      final message = Message.fromJson(parsedRawMessage, data);
-      if (message.tags == null || message.source?.nick == null) {
-        log("tag == null or nick null");
-        return;
+    Message? message;
+    if (notice != null) {
+      message = notice;
+    } else {
+      final parsedRawMessage = parseMessage(data!);
+      if (parsedRawMessage != null) {
+        message = Message.fromJson(parsedRawMessage, data);
       }
-      List<Message> messages = [
-        ...state.autoScroll ? state.messages : state.messageBuffer
-      ];
-      if (!state.autoScroll) {
-        messages.add(message);
-        emit(state.copyWith(messageBuffer: messages));
-        return;
-      }
-      if (messages.length <= renderMessagesLimit) {
-        messages.insert(0, message);
-      } else {
-        messages.removeAt(messages.length - 1);
-        messages.insert(0, message);
-      }
-      emit(state.copyWith(messages: messages));
     }
+    if (message == null) return;
+    List<Message> messages = [
+      ...state.autoScroll ? state.messages : state.messageBuffer
+    ];
+    if (message.parameters.contains('Welcome, GLHF')) {
+      message = Message.createNotice(message: 'Connecting to chat...');
+    }
+    if (!state.autoScroll) {
+      messages.add(message);
+      emit(state.copyWith(messageBuffer: messages));
+      return;
+    }
+    if (messages.length <= _renderMessagesLimit) {
+      messages.insert(0, message);
+    } else {
+      messages.removeAt(messages.length - 1);
+      messages.insert(0, message);
+    }
+    emit(state.copyWith(messages: messages));
   }
 
   void toggleAutoScroll({
@@ -84,7 +97,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     bool value = state.autoScroll;
     if (position <= 0) {
       value = true;
-    } else if (position <= renderMessagesLimit) {
+    } else if (position <= _renderMessagesLimit) {
       addMessagesFromBuffer(emit: emit);
     } else if (position > 0) {
       value = false;
@@ -111,13 +124,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required Emitter<ChatState> emit,
   }) {
     List<Message> messages = [...state.messages];
-    if (state.messageBuffer.length > renderMessagesLimit) {
+    if (state.messageBuffer.length > _renderMessagesLimit) {
       messages = state.messageBuffer
-          .sublist(state.messageBuffer.length - renderMessagesLimit);
+          .sublist(state.messageBuffer.length - _renderMessagesLimit);
     } else {
       messages.addAll(state.messageBuffer);
-      if (messages.length > renderMessagesLimit) {
-        messages = messages.sublist(messages.length - renderMessagesLimit);
+      if (messages.length > _renderMessagesLimit) {
+        messages = messages.sublist(messages.length - _renderMessagesLimit);
       }
     }
     emit(state.copyWith(
@@ -128,7 +141,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   @override
   Future<Function> close() async {
-    chatSubscription?.cancel();
+    _chatSubscription?.cancel();
     return super.close;
   }
 }

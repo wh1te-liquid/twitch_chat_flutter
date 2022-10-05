@@ -5,8 +5,9 @@ abstract class ChatEvent {}
 
 class ChatReceiveMessage extends ChatEvent {
   final String? data;
+  final Message? notice;
 
-  ChatReceiveMessage(this.data);
+  ChatReceiveMessage({this.data, this.notice});
 }
 
 class ChatUpdateScrollPosition extends ChatEvent {}
