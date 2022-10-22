@@ -12,11 +12,12 @@ import 'package:twitch_chat_flutter/screens/authorization/widgets/twitch_auth_we
 class AuthButton extends StatelessWidget {
   const AuthButton({Key? key}) : super(key: key);
 
-  String get loginUrl => "$baseUrl/oauth2/authorize"
+  String get loginUrl => "https://id.twitch.tv/oauth2/authorize"
       "?response_type=code"
       "&client_id=$clientId"
       "&redirect_uri=http://localhost"
-      "&scope=chat%3Aread+chat%3Aedit";
+      "&scope="
+      "chat:read chat:edit user:read:follows user:read:blocked_users user:manage:blocked_users";
 
   @override
   Widget build(BuildContext context) {

@@ -31,7 +31,7 @@ class AuthRepository {
   }
 
   Future<void> auth({required String code}) async {
-    final backendApi = getDio();
+    final backendApi = getDio(base: 'https://id.twitch.tv');
     final response = await backendApi.post("/oauth2/token", queryParameters: {
       'client_id': clientId,
       'client_secret': secret,

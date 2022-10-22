@@ -74,7 +74,10 @@ class TwitchIrcClient {
           _retriesCounter++;
           _chatSubscription?.cancel();
           connectToIRC(
-              accessToken: accessToken, onData: onData, onCancel: onCancel);
+            accessToken: accessToken,
+            onData: onData,
+            onCancel: onCancel,
+          );
         });
   }
 }

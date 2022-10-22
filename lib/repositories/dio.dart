@@ -7,8 +7,8 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:twitch_chat_flutter/constants.dart';
 
-Dio getDio() {
-  final dio = Dio(BaseOptions(baseUrl: baseUrl));
+Dio getDio({String? base}) {
+  final dio = Dio(BaseOptions(baseUrl: base ?? baseUrl));
   dio.interceptors.add(
     InterceptorsWrapper(onResponse: (response, handler) {
       logResponse(response: response);
